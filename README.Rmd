@@ -1,0 +1,379 @@
+---
+title: "R Class UAz-Okeanos"
+author: "Gerald H. Taranto"
+date: "2023-06-01"
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE,  out.width = "100%")
+```
+
+# 1.Introduction
+
+In this brief lecture on the use of the R environment for the processing of ecological data we will learn how to extract and visualize spatial data from a repository ([OBIS](https://obis.org/ "Ocean Biodiversity Information System")), clean the extracted data and apply some simple statistics. To keep things simple we will focus on two species common in the Azores: ***Helicolenus dactylopterus*** (bluemouth rockfish / boca negra) and ***Mora moro*** (Common mora / Melga). 
+
+We will try to answer a simple question: **do these species present different depth distributions in the Azores?** The focus will be on the R language itself rather than on the actual data analysis.
+
+### Data.table
+
+Our data will be in a tabular form which is normally stored as a `data.frame` in base R. However, we will use a slightly different data structure introduced by the package `data.table` ([vignettes](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html); [cheat sheet](https://res.cloudinary.com/dyd911kmh/image/upload/v1653830846/Marketing/Blog/data_table_cheat_sheet.pdf)). Data.table is an R package that provides a high-performance version of base R’s `data.frame` with syntax and feature enhancements for ease of use, convenience and programming speed. 
+
+For a very quick overview of `data.table` consider the following dummy tables:
+```{r data_table, collapse=TRUE}
+# install.packages("data.table") # Install package if required
+library(data.table)
+
+# Data frame 
+DF = data.frame(
+  ID = c("b","b","b","a","a","c"),
+  a = 1:6,
+  b = 7:12,
+  c = 13:18
+)
+
+# Data table
+DT <- as.data.table(DF)
+
+# Print the results
+DF
+
+DT
+```
+
+Now let's have a look at some basic syntax differences:
+
+```{r subset1, collapse=TRUE}
+# Sub-setting by row
+
+# Data frame 
+DF[DF$a  > 2, ]
+
+# Data table
+DT[a  > 2]
+```
+
+
+```{r subset2, collapse=TRUE}
+# Sub-setting by column
+
+# Data frame 
+DF[, "ID"]
+
+# Data table
+DT[, ID]
+```
+
+
+```{r bygroup, collapse=TRUE}
+# By group operation (mean value of column b for each ID)
+
+# Data frame 
+tapply(DF$b, DF$ID, mean)
+
+# Data table
+DT[, mean(b), by = ID]
+```
+
+
+For more information about `data.table` consult references ([vignettes](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html); [cheat sheet](https://res.cloudinary.com/dyd911kmh/image/upload/v1653830846/Marketing/Blog/data_table_cheat_sheet.pdf)) and [stack overflow](https://stackoverflow.com/questions/tagged/data.table).
+
+> Note that the **stack overflow community** is an excellent place where to look for help when you get stuck on some problem. Be sure to ask questions following the community's [guidelines](https://stackoverflow.com/help/how-to-ask). 
+
+
+# Get obis data
+
+For our lesson we will use some data from the [OBIS](https://obis.org/ "Ocean Biodiversity Information System") repository. To download data from obis there is a package called [robis](https://iobis.github.io/robis/articles/getting-started.html). 
+
+> Note that for most of the things you plan to do there is already an R package that can solve your problems. You just have to look for it. 
+
+```{r robis, warning=FALSE, collapse=FALSE, message=FALSE, eval=FALSE}
+# install.packages("robis") # Install package if required
+library(robis)
+
+# identify the species of interest
+spp_of_interest <- c("Mora moro", "Helicolenus dactylopterus")
+
+# DOWNLOAD AND SAVE DATA INTO A LIST
+lspp <- list()
+
+for(spp in spp_of_interest){
+  lspp[[spp]] <- robis::occurrence(spp) # save results into a named list
+}
+
+lspp
+```
+
+> Note that named lists are an excellent method to save any kind of result from loops. They will become your good friends.   
+
+Now the downloaded data is in [tibble](https://tibble.tidyverse.org/) format and has a lot of columns we don't need. Let's drop the columns we don't need, convert it into a `data table` and save it as a csv file using the function [data.table::fwrite](https://rdatatable.gitlab.io/data.table/reference/fwrite.html). Note that we can join tabular data (matrices, data frames, etc.) stored into a lists using the function `do.call` with the argument `rbind` (as we do below). 
+
+```{r do call, warning=FALSE, collapse=FALSE, message=FALSE, eval=FALSE}
+# SELECT COLUMN 
+keep_col <- c("scientificName", "decimalLatitude", "decimalLongitude", "minimumDepthInMeters", "maximumDepthInMeters", "year", "basisOfRecord", "institutionCode")
+
+lspp <- lapply(lspp, function(x) x[, keep_col]) 
+lspp
+
+# do.call / rbind AND convert to data.table
+obis <- as.data.table( do.call(rbind, lspp) )
+obis
+
+# SAVE OBIS TABLE
+date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
+filename <- paste0("obisAllSpp", date_string, ".csv")
+filename
+
+fwrite(obis, filename)
+```
+
+# 2.Visualize data
+
+> In my experience, the most common use of R is to visualize, organize and clean data. With time, you will see that the actual analyses will occupy little of your time. 
+
+So let's give it a try. First we can read back our species data table using the function [data.table::fread](https://rdatatable.gitlab.io/data.table/reference/fread.html) and check that it is all right. 
+
+```{r hidden, echo=FALSE}
+date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
+filename <- paste0("obisAllSpp", date_string, ".csv")
+```
+
+```{r read_data}
+spp <- fread(filename)
+spp
+```
+
+Now we are interested only in species records from the Azores. So let's load some shapefiles of the Azores that will help us *filter* our spatial data.
+There are many libraries for handling spatial data in R. Here we will use simple features ([sf](https://r-spatial.github.io/sf/articles/sf1.html "simple features for R")) for vector data (e.g. shapefiles) and [terra](https://rspatial.org/pkg/3-objects.html "raster data") for raster data. So let's load all required libraries (our plots will be both in base R and in the ggplot environment, so we'll also load ggplot) and read our data: 
+
+```{r load_libraries, message=FALSE, collapse=TRUE}
+# Load libraries (install them if not available on your computer)
+
+library(sf)
+library(ggplot2)
+library(ggspatial)
+
+azoresEEZ   <- sf::st_read("shapeFiles/AzoresEEZ.shp", quiet = TRUE)
+world       <- sf::st_read("shapeFiles/Mapa_Mundo_wgs84.shp", quiet = TRUE)
+```
+
+And let's convert our data table into a spatial data table using the function [sf::st_as_sf](https://r-spatial.github.io/sf/reference/st_as_sf.html):
+
+```{r transform_spatiaDF, message=FALSE, collapse=TRUE}
+# Transform our data.table into a spatial data table
+sppSpatial  <- sf::st_as_sf(spp, coords = c("decimalLongitude","decimalLatitude"))
+sppSpatial
+```
+
+> When dealing with spatial data it is important to **verify what coordinate reference system ([CRS](https://en.wikipedia.org/wiki/Spatial_reference_system "wiki")) your data are**. 
+
+Modern R packages are more and more using the [EPSG code](https://en.wikipedia.org/wiki/EPSG_Geodetic_Parameter_Dataset) as a way to reference coordinate systems. For instance the EPSG code `4326` refer to the current version of the World Geodetic System ([WGS84](https://epsg.io/4326)), one of the most commonly used standard. Let's check the CRS of our data:
+
+```{r crs, message=FALSE, collapse=TRUE}
+azoresEEZ_crs   <- st_crs(azoresEEZ, parameters = T)
+world_crs       <- st_crs(world, parameters = T)
+sppSpatial_crs  <- st_crs(sppSpatial, parameters = T)
+
+azoresEEZ_crs$epsg
+world_crs$epsg
+sppSpatial_crs$epsg
+```
+
+It looks like we forgot to add a CRS to our `sppSpatial` object. Let's assign a CRS now:
+```{r crs_sppSpatial, message=FALSE, collapse=TRUE}
+# Assign a crs
+st_crs(sppSpatial) <- 4326
+
+# Check that it is allright 
+sppSpatial_crs      <- st_crs(sppSpatial, parameters = T)
+sppSpatial_crs$epsg
+```
+
+Now we are ready to plot and have a visual check of our data. This time we will use base plots. 
+
+> In base R most of spatial objects can be plotted on top of each other with the argument **add = TRUE**
+
+```{r spatialPlot1, out.width="100%", warning=FALSE}
+plot( st_geometry(world), col = "grey90", border = "grey10")
+plot( st_geometry(sppSpatial), pch = 16, col = '#ff000040', add = TRUE)
+plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
+```
+
+> Colors can be set using hex codes of six digits ([hex colors](https://www.color-hex.com/)). If you add two extra digits, these define the color opacity. In our previous figure `#ff0000` is the hex code for the color `red1` and the last two numbers `40` set the opacity at 40% (`#ff000040`). In this way we can see overlappyng points. 
+
+# 3.Clean data
+
+### Spatial filter
+
+Now we are only interested in the data from the Azores. We'll use the shapefile `AzoresEEZ.shp` to apply a spatial filter using the function [sf::st_filter](https://r-spatial.github.io/sf/reference/st_join.html):
+
+```{r sf_filter}
+sppAzores <- st_filter(sppSpatial, azoresEEZ)
+```
+
+Let's plot again our data:
+
+```{r spatialPlot2, out.width="100%", warning=FALSE}
+plot( st_geometry(world), col = "grey90", border = "grey10")
+plot( st_geometry(sppAzores), pch = 16, col = '#ff000040', add = TRUE)
+plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
+```
+
+Most of the data come from our institute (IMAR/DOP) and are from 1971 to 2013:
+
+```{r institute}
+table(sppAzores$institutionCode)
+range(sppAzores$year, na.rm = TRUE)
+```
+
+### Temporal filter
+
+Now we'll apply a temporal filter to exclude old records that are more likely to present georeferencing issues. So we will remove all records without a year and all records registered before the year 2000
+
+```{r spatial filter}
+sppAzores <- sppAzores[!is.na(sppAzores$year), ]
+sppAzores <- sppAzores[sppAzores$year >= 2000, ]
+```
+
+In the end we remain with 475 records for *Helicolenus dactylopterus* and 309 records for *Mora moro* and most of these records are from IMAR/DOP:
+
+```{r institute2}
+table(sppAzores$scientificName)
+table(sppAzores$institutionCode) 
+```
+
+### Depth filter
+
+To answer our question we will need to have some depth associated with each register. We will use a digital terrain model (dtm; raster data) to associate a depth to each register. This DTM was obtained from [EMODNET](https://emodnet.ec.europa.eu/geoviewer/). We will assume that our surveys only go down to a depth of 1500 m, so we will exclude all data points below 1500 m deph. 
+
+The first step will be to read and plot the dtm using the `terra` package. 
+
+```{r dtm, out.width="100%", message=FALSE, warning=FALSE}
+library(terra)
+dtm <- terra::rast("rasterFiles/emodnetDTM.tif")
+plot(dtm)
+title("DTM EMODNET")
+```
+
+We can then exclude from this raster all depths below 1000 m and use it to filter our species data set 
+
+```{r dtm1500, out.width="100%", message=FALSE}
+library(terra)
+dtm <- dtm
+dtm[which(values(dtm < -1000))] <- NA
+plot(dtm)
+title("DTM < 1000 m")
+```
+
+Extract the depth and raster cells based on the coordinates associated with each species record: 
+```{r extract}
+ext_depth <- extract(dtm, sppAzores, cells = TRUE, ID = FALSE)
+
+sppAzores$depth <- ext_depth[,1]
+sppAzores$rcell <- ext_depth[,2]
+```
+
+Remove records with NA values instead of depth values (e.g. records below 1000 m):
+```{r dept_filter, collapse=TRUE}
+nrow(sppAzores)
+sppAzores <- sppAzores[!is.na(sppAzores$depth), ]
+
+nrow(sppAzores)
+```
+
+### Data rarefaction 
+
+Most of statistical tests require independence of observations. Since some of our species records could be recorded within the same survey (e.g. same bottom longline deployment) we will aggregate data falling within the same raster cell of the dtm raster. These cells have an approximate resolution of 1X1 kilometer. 
+
+To do so we will use the column `sppAzores$rcell` that we obtain when we called the `extract` function. We will remove all records of the same species that fall into the same cell. 
+
+> Note that raster data can be treated as matrices or as vectors using the raster cell numbers ([reference](https://rspatial.org/raster/pkg/8-cell_level_functions.html)). Raster cell numbers can be very useful in solving many problems. 
+
+So let's remove duplicate records falling within the same raster cell. To do so we will first convert our spatial data table into a data.table: 
+
+```{r rarefaction, collapse=TRUE}
+# Convert to data table
+sppAzoresDT <- as.data.table(sppAzores)
+nrow(sppAzoresDT)
+
+# Remove duplicates
+sppAzoresDT <- unique(sppAzoresDT, by = c('scientificName','rcell'))
+nrow(sppAzoresDT)
+
+table(sppAzoresDT$scientificName)
+```
+
+### Visualize clean data 
+
+Let's plot our final data. We will try to make a nicer figure using `ggplot2`. We can use a custom font for our plot with the library [showtext](https://cran.rstudio.com/web/packages/showtext/vignettes/introduction.html).
+
+> Note that plots with user defined fonts and color look much more professional. 
+
+```{r showtext, message=FALSE}
+# Load library (install them if not available on your computer)
+library(showtext)
+
+showtext_auto(TRUE) # Automatically Using 'showtext' for new plots
+
+fl <- font_files()  # Retrieve all fonts on installed on your computer 
+
+# find the font named "Georgia"
+fl[grepl(pattern = "geo", fl$family, ignore.case = TRUE), ]
+
+# add relevant files to a character name (e.g. "georgia.ttf" to "geo_reg")
+font_add("geo_reg", "georgia.ttf")   # regular
+font_add("geo_bold","georgiab.ttf")  # bold
+font_add("geo_ita", "georgiai.ttf")  # italic
+font_add("geo_bita", "georgiaz.ttf") # bold-italic
+```
+
+Plot our final data using a custom font:
+
+```{r spatialPlot3, out.width="100%"}
+sppAzores$scientificName <- as.factor(sppAzores$scientificName) # use factors for multiple figure facets
+
+ggplot() +
+  geom_sf(data = azoresEEZ, col = "black", size = 1, fill = "transparent", legend = FALSE) + 
+  geom_sf(data = sppAzores, aes(col = scientificName, shape = scientificName), size = 0.80, alpha = 0.5, legend = FALSE) + 
+  geom_sf(data = azoresEEZ, col = "black", size = 1, fill = "transparent", legend = FALSE) +
+  theme(legend.position="none", 
+        strip.text.x = element_text(size = 22, family = "geo_bita", color = "white"),
+        axis.text = element_text(size = 16, family = "geo_reg"),
+        panel.grid = element_line(linetype = 2, color = "grey85", size = 0.5),
+        panel.border = element_rect(color = "black", fill = NA, size = 1),
+        panel.background = element_rect(fill = "#f6eee3"), 
+        strip.background = element_rect(color = "black", size = 1, fill = "black")) + 
+  facet_grid(. ~ scientificName)
+```
+
+# 4.Answer our question 
+
+So after cleaning our data we can answer our question: __do *Helicolenus dactylopterus* and *Mora moro* present different depth distributions in the Azores?__
+
+First let's plot their depth range using a violin plot:
+
+```{r violin, out.width="100%"}
+ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) + 
+  geom_violin() + 
+  geom_boxplot(width=0.1, color="grey30", alpha=0.2) + 
+  ylab("Depth (m)") + xlab("") + 
+  theme_bw() +
+  theme(legend.position="none",
+        text = element_text(size = 20, family = "geo_reg")) +
+  scale_fill_manual(values = c("bisque2", "azure2")) #check http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+```
+
+We can run a t.test to assess if the difference between the average depth of the two species can be expected only by chance (i.e, they have the same average depth)
+
+```{r ttest}
+t.test(sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth], 
+       sppAzoresDT[scientificName == "Mora moro", depth])
+```
+
+> **Do our species have different depth distributions?**
+
+You can check [this](https://www.statology.org/interpret-t-test-results-in-r/) website to interpret the results. 
+
