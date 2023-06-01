@@ -186,11 +186,18 @@ ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) +
   geom_boxplot(width=0.1, color="grey30", alpha=0.2) + 
   ylab("Depth (m)") + xlab("") + 
   theme_bw() +
-  theme(legend.position="none") +
+  theme(legend.position="none",
+        ) +
   scale_fill_manual(values = c("bisque2", "azure2")) # check http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
                                         
-                                 
-t.test(modelDT[spp=="Helicolenus_dactylopterus" & presAbs == 1, emodnetDTM],   modelDT[spp=="Mora_moro" & presAbs == 1, emodnetDTM])
+
+
+sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth]
+
+
+
+t.test(sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth], 
+       sppAzoresDT[scientificName == "Mora moro", depth])
 
 
        
