@@ -159,6 +159,50 @@ for(spp in spp_of_interest){
 lspp
 ```
 
+    ## $`Mora moro`
+    ## # A tibble: 10,272 × 134
+    ##    basisOfRecord    bibliographicCitation   catalogNumber class coordinateUncer…
+    ##    <chr>            <chr>                   <chr>         <chr> <chr>           
+    ##  1 HumanObservation Mora moro (MBIS resear… Trawl buc840… Tele… 30              
+    ##  2 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+    ##  3 HumanObservation Mora moro (MBIS resear… Trawl buc850… Tele… 30              
+    ##  4 HumanObservation <NA>                    <NA>          Tele… 500             
+    ##  5 HumanObservation Mora moro (MBIS resear… Trawl aex880… Tele… 30              
+    ##  6 HumanObservation <NA>                    Trawl thh110… Tele… 30              
+    ##  7 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+    ##  8 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+    ##  9 HumanObservation Mora moro (MBIS resear… Trawl aex900… Tele… 30              
+    ## 10 HumanObservation Mora moro (MBIS resear… Trawl jco891… Tele… 30              
+    ## # … with 10,262 more rows, and 129 more variables: datasetName <chr>,
+    ## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
+    ## #   dynamicProperties <chr>, eventDate <chr>, family <chr>, fieldNumber <chr>,
+    ## #   footprintWKT <chr>, genus <chr>, geodeticDatum <chr>,
+    ## #   institutionCode <chr>, kingdom <chr>, language <chr>,
+    ## #   maximumDepthInMeters <dbl>, minimumDepthInMeters <dbl>, modified <chr>,
+    ## #   month <chr>, occurrenceID <chr>, occurrenceRemarks <chr>, …
+    ## 
+    ## $`Helicolenus dactylopterus`
+    ## # A tibble: 36,257 × 154
+    ##    basisOfRecord    bibliographicCitation     catalogNumber class collectionCode
+    ##    <chr>            <chr>                     <chr>         <chr> <chr>         
+    ##  1 Occurrence       Scottish West Coast Surv… 1879036       Tele… DATRAS-ALT-IB…
+    ##  2 HumanObservation <NA>                      MCM-DEM-1324… Tele… DEM           
+    ##  3 HumanObservation <NA>                      <NA>          Acti… <NA>          
+    ##  4 HumanObservation <NA>                      MCM-DEM-0078… Tele… DEM           
+    ##  5 HumanObservation <NA>                      1.9940201290… Acti… SPRING NMFS N…
+    ##  6 Occurrence       Scottish Rockall Survey   1846689       Tele… DATRAS-ROCKALL
+    ##  7 HumanObservation <NA>                      <NA>          Acti… <NA>          
+    ##  8 HumanObservation <NA>                      MCM-DEM-1924… Tele… DEM           
+    ##  9 HumanObservation <NA>                      <NA>          Acti… <NA>          
+    ## 10 HumanObservation <NA>                      <NA>          Acti… <NA>          
+    ## # … with 36,247 more rows, and 149 more variables:
+    ## #   coordinateUncertaintyInMeters <chr>, country <chr>, datasetID <chr>,
+    ## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
+    ## #   dynamicProperties <chr>, eventDate <chr>, eventTime <chr>, family <chr>,
+    ## #   genus <chr>, individualCount <chr>, institutionCode <chr>, kingdom <chr>,
+    ## #   maximumDepthInMeters <dbl>, modified <chr>, month <chr>,
+    ## #   occurrenceID <chr>, occurrenceRemarks <chr>, occurrenceStatus <chr>, …
+
 > Note that named lists are an excellent method to save any kind of
 > result from loops. They will become your good friends.
 
@@ -177,16 +221,95 @@ keep_col <- c("scientificName", "decimalLatitude", "decimalLongitude", "minimumD
 
 lspp <- lapply(lspp, function(x) x[, keep_col]) 
 lspp
+```
 
+    ## $`Mora moro`
+    ## # A tibble: 10,272 × 8
+    ##    scientificName decimalLatitude decimalLongitude minimumDepthInMeters
+    ##    <chr>                    <dbl>            <dbl>                <dbl>
+    ##  1 Mora moro                -42.9            -176.                  877
+    ##  2 Mora moro                -42.9            -177.                  793
+    ##  3 Mora moro                -42.8            -177.                  800
+    ##  4 Mora moro                -37.7             139.                  915
+    ##  5 Mora moro                -39.8             168.                  850
+    ##  6 Mora moro                -40               168.                  876
+    ##  7 Mora moro                -42.9             179.                  824
+    ##  8 Mora moro                -42.8            -177.                  839
+    ##  9 Mora moro                -51.0             174.                  765
+    ## 10 Mora moro                -40.3             168.                  943
+    ## # … with 10,262 more rows, and 4 more variables: maximumDepthInMeters <dbl>,
+    ## #   year <chr>, basisOfRecord <chr>, institutionCode <chr>
+    ## 
+    ## $`Helicolenus dactylopterus`
+    ## # A tibble: 36,257 × 8
+    ##    scientificName            decimalLatitude decimalLongitude minimumDepthInMet…
+    ##    <chr>                               <dbl>            <dbl>              <dbl>
+    ##  1 Helicolenus dactylopterus            56.2            -9.08                 NA
+    ##  2 Helicolenus dactylopterus           -33.3            17.4                 250
+    ##  3 Helicolenus dactylopterus            42.7           -64.2                  NA
+    ##  4 Helicolenus dactylopterus           -34.4            25.9                  NA
+    ##  5 Helicolenus dactylopterus            42.3           -66.4                 240
+    ##  6 Helicolenus dactylopterus            57.3           -13.9                  NA
+    ##  7 Helicolenus dactylopterus            45.3           -59.4                  NA
+    ##  8 Helicolenus dactylopterus           -33.3            17.4                 239
+    ##  9 Helicolenus dactylopterus            42.5           -66.7                  NA
+    ## 10 Helicolenus dactylopterus            42.3           -66.5                  NA
+    ## # … with 36,247 more rows, and 4 more variables: maximumDepthInMeters <dbl>,
+    ## #   year <chr>, basisOfRecord <chr>, institutionCode <chr>
+
+``` r
 # do.call / rbind AND convert to data.table
 obis <- as.data.table( do.call(rbind, lspp) )
 obis
+```
 
+    ##                   scientificName decimalLatitude decimalLongitude
+    ##     1:                 Mora moro       -42.94830       -175.56000
+    ##     2:                 Mora moro       -42.86500       -176.99330
+    ##     3:                 Mora moro       -42.83830       -177.42170
+    ##     4:                 Mora moro       -37.67500        139.31667
+    ##     5:                 Mora moro       -39.80500        168.03670
+    ##    ---                                                           
+    ## 46525: Helicolenus dactylopterus        42.33783        -67.21600
+    ## 46526: Helicolenus dactylopterus        42.48067        -64.74517
+    ## 46527: Helicolenus dactylopterus        42.38083        -66.21833
+    ## 46528: Helicolenus dactylopterus        42.55750        -66.81467
+    ## 46529: Helicolenus dactylopterus        43.34533        -63.27667
+    ##        minimumDepthInMeters maximumDepthInMeters year    basisOfRecord
+    ##     1:                  877                  880 1984 HumanObservation
+    ##     2:                  793                  817 1988 HumanObservation
+    ##     3:                  800                  800 1985 HumanObservation
+    ##     4:                  915                  920 <NA> HumanObservation
+    ##     5:                  850                  861 1988 HumanObservation
+    ##    ---                                                                
+    ## 46525:                   NA                   NA <NA> HumanObservation
+    ## 46526:                   NA                   NA <NA> HumanObservation
+    ## 46527:                   NA                   NA <NA> HumanObservation
+    ## 46528:                   NA                   NA <NA> HumanObservation
+    ## 46529:                   NA                   NA <NA> HumanObservation
+    ##                                institutionCode
+    ##     1:                                    NIWA
+    ##     2:                                    NIWA
+    ##     3:                                    NIWA
+    ##     4:                        CSIRO, Australia
+    ##     5:                                    NIWA
+    ##    ---                                        
+    ## 46525: Bedford Institute of Oceanography (BIO)
+    ## 46526: Bedford Institute of Oceanography (BIO)
+    ## 46527: Bedford Institute of Oceanography (BIO)
+    ## 46528: Bedford Institute of Oceanography (BIO)
+    ## 46529: Bedford Institute of Oceanography (BIO)
+
+``` r
 # SAVE OBIS TABLE
 date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
+```
 
+    ## [1] "obisAllSpp2023_06_01.csv"
+
+``` r
 fwrite(obis, filename)
 ```
 
@@ -585,8 +708,8 @@ ggplot() +
   geom_sf(data = sppAzores, aes(col = scientificName, shape = scientificName), size = 0.80, alpha = 0.5, legend = FALSE) + 
   geom_sf(data = azoresEEZ, col = "black", size = 1, fill = "transparent", legend = FALSE) +
   theme(legend.position="none", 
-        strip.text.x = element_text(size = 22, family = "geo_bita", color = "white"),
-        axis.text = element_text(size = 16, family = "geo_reg"),
+        strip.text.x = element_text(size = 18, family = "geo_bita", color = "white"),
+        axis.text = element_text(size = 14, family = "geo_reg"),
         panel.grid = element_line(linetype = 2, color = "grey85", size = 0.5),
         panel.border = element_rect(color = "black", fill = NA, size = 1),
         panel.background = element_rect(fill = "#f6eee3"), 
