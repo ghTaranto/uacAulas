@@ -8,7 +8,7 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
-```{r setup, include=FALSE, fig.align='center'}
+```{r setup, include=FALSE, fig.align='center', out.width="90%", dpi=600}
 knitr::opts_chunk$set(echo = TRUE,  out.width = "100%")
 ```
 
@@ -90,7 +90,7 @@ For our lesson we will use some data from the [OBIS](https://obis.org/ "Ocean Bi
 
 > Note that for most of the things you plan to do there is already an R package that can solve your problems. You just have to look for it. 
 
-```{r robis, warning=FALSE, collapse=FALSE, message=FALSE, eval=FALSE}
+```{r robis, warning=FALSE, collapse=FALSE, message=FALSE}
 # install.packages("robis") # Install package if required
 library(robis)
 
@@ -111,7 +111,7 @@ lspp
 
 Now the downloaded data is in [tibble](https://tibble.tidyverse.org/) format and has a lot of columns we don't need. Let's drop the columns we don't need, convert it into a `data table` and save it as a csv file using the function [data.table::fwrite](https://rdatatable.gitlab.io/data.table/reference/fwrite.html). Note that we can join tabular data (matrices, data frames, etc.) stored into a lists using the function `do.call` with the argument `rbind` (as we do below). 
 
-```{r do call, warning=FALSE, collapse=FALSE, message=FALSE, eval=FALSE}
+```{r do call, warning=FALSE, collapse=FALSE, message=FALSE}
 # SELECT COLUMN 
 keep_col <- c("scientificName", "decimalLatitude", "decimalLongitude", "minimumDepthInMeters", "maximumDepthInMeters", "year", "basisOfRecord", "institutionCode")
 
@@ -196,7 +196,7 @@ Now we are ready to plot and have a visual check of our data. This time we will 
 
 > In base R most of spatial objects can be plotted on top of each other with the argument **add = TRUE**
 
-```{r spatialPlot1, out.width="100%", warning=FALSE}
+```{r spatialPlot1, out.width="90%", warning=FALSE, dpi=600}
 plot( st_geometry(world), col = "grey90", border = "grey10")
 plot( st_geometry(sppSpatial), pch = 16, col = '#ff000040', add = TRUE)
 plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
@@ -216,7 +216,7 @@ sppAzores <- st_filter(sppSpatial, azoresEEZ)
 
 Let's plot again our data:
 
-```{r spatialPlot2, out.width="100%", warning=FALSE}
+```{r spatialPlot2, out.width="90%", warning=FALSE, dpi=600}
 plot( st_geometry(world), col = "grey90", border = "grey10")
 plot( st_geometry(sppAzores), pch = 16, col = '#ff000040', add = TRUE)
 plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
@@ -251,7 +251,7 @@ To answer our question we will need to have some depth associated with each regi
 
 The first step will be to read and plot the dtm using the `terra` package. 
 
-```{r dtm, out.width="100%", message=FALSE, warning=FALSE}
+```{r dtm, out.width="90%", message=FALSE, warning=FALSE, dpi=600}
 library(terra)
 dtm <- terra::rast("rasterFiles/emodnetDTM.tif")
 plot(dtm)
@@ -260,7 +260,7 @@ title("DTM EMODNET")
 
 We can then exclude from this raster all depths below 1000 m and use it to filter our species data set 
 
-```{r dtm1500, out.width="100%", message=FALSE}
+```{r dtm1500, out.width="90%", message=FALSE, dpi=600}
 library(terra)
 dtm <- dtm
 dtm[which(values(dtm < -1000))] <- NA
@@ -332,7 +332,7 @@ font_add("geo_bita", "georgiaz.ttf") # bold-italic
 
 Plot our final data using a custom font:
 
-```{r spatialPlot3, out.width="100%", dpi=600}
+```{r spatialPlot3, out.width="90%", dpi=600}
 sppAzores$scientificName <- as.factor(sppAzores$scientificName) # use factors for multiple figure facets
 
 ggplot() +
@@ -340,8 +340,8 @@ ggplot() +
   geom_sf(data = sppAzores, aes(col = scientificName, shape = scientificName), size = 0.80, alpha = 0.5, legend = FALSE) + 
   geom_sf(data = azoresEEZ, col = "black", size = 1, fill = "transparent", legend = FALSE) +
   theme(legend.position="none", 
-        strip.text.x = element_text(size = 18, family = "geo_bita", color = "white"),
-        axis.text = element_text(size = 14, family = "geo_reg"),
+        strip.text.x = element_text(size = 70, family = "geo_bita", color = "white"),
+        axis.text = element_text(size = 50, family = "geo_reg"),
         panel.grid = element_line(linetype = 2, color = "grey85", size = 0.5),
         panel.border = element_rect(color = "black", fill = NA, size = 1),
         panel.background = element_rect(fill = "#f6eee3"), 
@@ -355,14 +355,14 @@ So after cleaning our data we can answer our question: __do *Helicolenus dactylo
 
 First let's plot their depth range using a violin plot:
 
-```{r violin, out.width="100%"}
+```{r violin, out.width="90%", dpi=600}
 ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) + 
   geom_violin() + 
   geom_boxplot(width=0.1, color="grey30", alpha=0.2) + 
   ylab("Depth (m)") + xlab("") + 
   theme_bw() +
   theme(legend.position="none",
-        text = element_text(size = 20, family = "geo_reg")) +
+        text = element_text(size = 60, family = "geo_reg")) +
   scale_fill_manual(values = c("bisque2", "azure2")) #check http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 ```
 
