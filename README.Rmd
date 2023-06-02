@@ -6,23 +6,23 @@ output:
   github_document
 ---
 
-```{css, echo=FALSE}
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-y: auto !important;
-  max-height: 500px;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
+```{css, echo=FALSE, include=FALSE}
+<!-- pre code, pre, code { -->
+<!--   white-space: pre !important; -->
+<!--   overflow-y: auto !important; -->
+<!--   max-height: 500px; -->
+<!--   word-break: keep-all !important; -->
+<!--   word-wrap: initial !important; -->
+<!-- } -->
 
-blockquote {
-  color: #007577;
-  margin-left: 0.5em;
-  margin-right: 1em;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-  border-left: 4px #007577 solid;
-}
+<!-- blockquote { -->
+<!--   color: #007577; -->
+<!--   margin-left: 0.5em; -->
+<!--   margin-right: 1em; -->
+<!--   margin-top: 1.5em; -->
+<!--   margin-bottom: 1.5em; -->
+<!--   border-left: 4px #007577 solid; -->
+<!-- } -->
 ```
 
 ```{r setup, include=FALSE}

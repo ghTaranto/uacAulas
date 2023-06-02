@@ -3,25 +3,6 @@ R Class UAz-Okeanos
 Gerald H. Taranto
 2023-06-01
 
-<style type="text/css">
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-y: auto !important;
-  max-height: 500px;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
-
-blockquote {
-  color: #007577;
-  margin-left: 0.5em;
-  margin-right: 1em;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-  border-left: 4px #007577 solid;
-}
-</style>
-
 # 1.Introduction
 
 In this brief lecture on the use of the R environment for the processing
