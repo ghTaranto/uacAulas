@@ -3,9 +3,7 @@ title: "R Class UAz-Okeanos"
 author: "Gerald H. Taranto"
 date: "2023-06-01"
 output: 
-  github_document:
-    toc: true
-    toc_depth: 3
+  github_document
 ---
 
 ```{css, echo=FALSE}
