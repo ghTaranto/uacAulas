@@ -3,7 +3,41 @@ R Class UAz-Okeanos
 Gerald H. Taranto
 2023-06-01
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+- <a href="#1introduction" id="toc-1introduction">1.Introduction</a>
+  - <a href="#git-github-and-rmarkdown"
+    id="toc-git-github-and-rmarkdown">Git, github and Rmarkdown</a>
+  - <a href="#datatable" id="toc-datatable">Data.table</a>
+- <a href="#get-obis-data" id="toc-get-obis-data">Get obis data</a>
+- <a href="#2visualize-data" id="toc-2visualize-data">2.Visualize data</a>
+- <a href="#3clean-data" id="toc-3clean-data">3.Clean data</a>
+  - <a href="#spatial-filter" id="toc-spatial-filter">Spatial filter</a>
+  - <a href="#temporal-filter" id="toc-temporal-filter">Temporal filter</a>
+  - <a href="#depth-filter" id="toc-depth-filter">Depth filter</a>
+  - <a href="#data-rarefaction" id="toc-data-rarefaction">Data
+    rarefaction</a>
+  - <a href="#visualize-clean-data" id="toc-visualize-clean-data">Visualize
+    clean data</a>
+- <a href="#4answer-our-question" id="toc-4answer-our-question">4.Answer
+  our question</a>
+
+<style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-y: auto !important;
+  max-height: 500px;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+
+blockquote {
+  color: #007577;
+  margin-left: 0.5em;
+  margin-right: 1em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-left: 4px #007577 solid;
+}
+</style>
 
 # 1.Introduction
 
@@ -19,6 +53,28 @@ things simple we will focus on two species common in the Azores:
 We will try to answer a simple question: **do these species present
 different depth distributions in the Azores?** The focus will be on the
 R language itself rather than on the actual data analysis.
+
+### Git, github and Rmarkdown
+
+Before we start note that it is relatively easy to create a page like
+this one once you have a proper setup on your computer.
+
+I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`).
+You can download the file I used to create this page (`Readme.Rmd`) and
+open it in Rstudio. This files is written using R markdown, a language
+that allows you to integrate R codes and text producing different kind
+of outputs (PDF, HTML, etc.). If you are interested check this
+[chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for
+Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat
+sheet](file:///E:/Users/VideoLab/Downloads/rmarkdown-1.pdf).
+
+Once you have your readme file ready you can upload it on a [github
+repository](https://github.com/) after you set a
+[Git](https://git-scm.com/about) version control system on your
+computer. A thorough explanation of git and github setting goes beyond
+this class. But if you want to give it a try, this
+[video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very
+easy explanation.
 
 ### Data.table
 
@@ -156,52 +212,51 @@ for(spp in spp_of_interest){
   lspp[[spp]] <- robis::occurrence(spp) # save results into a named list
 }
 
-lspp
+print(lspp)
+## $`Mora moro`
+## # A tibble: 10,272 × 134
+##    basisOfRecord    bibliographicCitation   catalogNumber class coordinateUncer…
+##    <chr>            <chr>                   <chr>         <chr> <chr>           
+##  1 HumanObservation Mora moro (MBIS resear… Trawl buc840… Tele… 30              
+##  2 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+##  3 HumanObservation Mora moro (MBIS resear… Trawl buc850… Tele… 30              
+##  4 HumanObservation <NA>                    <NA>          Tele… 500             
+##  5 HumanObservation Mora moro (MBIS resear… Trawl aex880… Tele… 30              
+##  6 HumanObservation <NA>                    Trawl thh110… Tele… 30              
+##  7 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+##  8 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
+##  9 HumanObservation Mora moro (MBIS resear… Trawl aex900… Tele… 30              
+## 10 HumanObservation Mora moro (MBIS resear… Trawl jco891… Tele… 30              
+## # … with 10,262 more rows, and 129 more variables: datasetName <chr>,
+## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
+## #   dynamicProperties <chr>, eventDate <chr>, family <chr>, fieldNumber <chr>,
+## #   footprintWKT <chr>, genus <chr>, geodeticDatum <chr>,
+## #   institutionCode <chr>, kingdom <chr>, language <chr>,
+## #   maximumDepthInMeters <dbl>, minimumDepthInMeters <dbl>, modified <chr>,
+## #   month <chr>, occurrenceID <chr>, occurrenceRemarks <chr>, …
+## 
+## $`Helicolenus dactylopterus`
+## # A tibble: 36,257 × 154
+##    basisOfRecord    bibliographicCitation     catalogNumber class collectionCode
+##    <chr>            <chr>                     <chr>         <chr> <chr>         
+##  1 Occurrence       Scottish West Coast Surv… 1879036       Tele… DATRAS-ALT-IB…
+##  2 HumanObservation <NA>                      MCM-DEM-1324… Tele… DEM           
+##  3 HumanObservation <NA>                      <NA>          Acti… <NA>          
+##  4 HumanObservation <NA>                      MCM-DEM-0078… Tele… DEM           
+##  5 HumanObservation <NA>                      1.9940201290… Acti… SPRING NMFS N…
+##  6 Occurrence       Scottish Rockall Survey   1846689       Tele… DATRAS-ROCKALL
+##  7 HumanObservation <NA>                      <NA>          Acti… <NA>          
+##  8 HumanObservation <NA>                      MCM-DEM-1924… Tele… DEM           
+##  9 HumanObservation <NA>                      <NA>          Acti… <NA>          
+## 10 HumanObservation <NA>                      <NA>          Acti… <NA>          
+## # … with 36,247 more rows, and 149 more variables:
+## #   coordinateUncertaintyInMeters <chr>, country <chr>, datasetID <chr>,
+## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
+## #   dynamicProperties <chr>, eventDate <chr>, eventTime <chr>, family <chr>,
+## #   genus <chr>, individualCount <chr>, institutionCode <chr>, kingdom <chr>,
+## #   maximumDepthInMeters <dbl>, modified <chr>, month <chr>,
+## #   occurrenceID <chr>, occurrenceRemarks <chr>, occurrenceStatus <chr>, …
 ```
-
-    ## $`Mora moro`
-    ## # A tibble: 10,272 × 134
-    ##    basisOfRecord    bibliographicCitation   catalogNumber class coordinateUncer…
-    ##    <chr>            <chr>                   <chr>         <chr> <chr>           
-    ##  1 HumanObservation Mora moro (MBIS resear… Trawl buc840… Tele… 30              
-    ##  2 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
-    ##  3 HumanObservation Mora moro (MBIS resear… Trawl buc850… Tele… 30              
-    ##  4 HumanObservation <NA>                    <NA>          Tele… 500             
-    ##  5 HumanObservation Mora moro (MBIS resear… Trawl aex880… Tele… 30              
-    ##  6 HumanObservation <NA>                    Trawl thh110… Tele… 30              
-    ##  7 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
-    ##  8 HumanObservation Mora moro (MBIS resear… Trawl cor880… Tele… 30              
-    ##  9 HumanObservation Mora moro (MBIS resear… Trawl aex900… Tele… 30              
-    ## 10 HumanObservation Mora moro (MBIS resear… Trawl jco891… Tele… 30              
-    ## # … with 10,262 more rows, and 129 more variables: datasetName <chr>,
-    ## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
-    ## #   dynamicProperties <chr>, eventDate <chr>, family <chr>, fieldNumber <chr>,
-    ## #   footprintWKT <chr>, genus <chr>, geodeticDatum <chr>,
-    ## #   institutionCode <chr>, kingdom <chr>, language <chr>,
-    ## #   maximumDepthInMeters <dbl>, minimumDepthInMeters <dbl>, modified <chr>,
-    ## #   month <chr>, occurrenceID <chr>, occurrenceRemarks <chr>, …
-    ## 
-    ## $`Helicolenus dactylopterus`
-    ## # A tibble: 36,257 × 154
-    ##    basisOfRecord    bibliographicCitation     catalogNumber class collectionCode
-    ##    <chr>            <chr>                     <chr>         <chr> <chr>         
-    ##  1 Occurrence       Scottish West Coast Surv… 1879036       Tele… DATRAS-ALT-IB…
-    ##  2 HumanObservation <NA>                      MCM-DEM-1324… Tele… DEM           
-    ##  3 HumanObservation <NA>                      <NA>          Acti… <NA>          
-    ##  4 HumanObservation <NA>                      MCM-DEM-0078… Tele… DEM           
-    ##  5 HumanObservation <NA>                      1.9940201290… Acti… SPRING NMFS N…
-    ##  6 Occurrence       Scottish Rockall Survey   1846689       Tele… DATRAS-ROCKALL
-    ##  7 HumanObservation <NA>                      <NA>          Acti… <NA>          
-    ##  8 HumanObservation <NA>                      MCM-DEM-1924… Tele… DEM           
-    ##  9 HumanObservation <NA>                      <NA>          Acti… <NA>          
-    ## 10 HumanObservation <NA>                      <NA>          Acti… <NA>          
-    ## # … with 36,247 more rows, and 149 more variables:
-    ## #   coordinateUncertaintyInMeters <chr>, country <chr>, datasetID <chr>,
-    ## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
-    ## #   dynamicProperties <chr>, eventDate <chr>, eventTime <chr>, family <chr>,
-    ## #   genus <chr>, individualCount <chr>, institutionCode <chr>, kingdom <chr>,
-    ## #   maximumDepthInMeters <dbl>, modified <chr>, month <chr>,
-    ## #   occurrenceID <chr>, occurrenceRemarks <chr>, occurrenceStatus <chr>, …
 
 > Note that named lists are an excellent method to save any kind of
 > result from loops. They will become your good friends.
@@ -220,96 +275,56 @@ we do below).
 keep_col <- c("scientificName", "decimalLatitude", "decimalLongitude", "minimumDepthInMeters", "maximumDepthInMeters", "year", "basisOfRecord", "institutionCode")
 
 lspp <- lapply(lspp, function(x) x[, keep_col]) 
-lspp
-```
 
-    ## $`Mora moro`
-    ## # A tibble: 10,272 × 8
-    ##    scientificName decimalLatitude decimalLongitude minimumDepthInMeters
-    ##    <chr>                    <dbl>            <dbl>                <dbl>
-    ##  1 Mora moro                -42.9            -176.                  877
-    ##  2 Mora moro                -42.9            -177.                  793
-    ##  3 Mora moro                -42.8            -177.                  800
-    ##  4 Mora moro                -37.7             139.                  915
-    ##  5 Mora moro                -39.8             168.                  850
-    ##  6 Mora moro                -40               168.                  876
-    ##  7 Mora moro                -42.9             179.                  824
-    ##  8 Mora moro                -42.8            -177.                  839
-    ##  9 Mora moro                -51.0             174.                  765
-    ## 10 Mora moro                -40.3             168.                  943
-    ## # … with 10,262 more rows, and 4 more variables: maximumDepthInMeters <dbl>,
-    ## #   year <chr>, basisOfRecord <chr>, institutionCode <chr>
-    ## 
-    ## $`Helicolenus dactylopterus`
-    ## # A tibble: 36,257 × 8
-    ##    scientificName            decimalLatitude decimalLongitude minimumDepthInMet…
-    ##    <chr>                               <dbl>            <dbl>              <dbl>
-    ##  1 Helicolenus dactylopterus            56.2            -9.08                 NA
-    ##  2 Helicolenus dactylopterus           -33.3            17.4                 250
-    ##  3 Helicolenus dactylopterus            42.7           -64.2                  NA
-    ##  4 Helicolenus dactylopterus           -34.4            25.9                  NA
-    ##  5 Helicolenus dactylopterus            42.3           -66.4                 240
-    ##  6 Helicolenus dactylopterus            57.3           -13.9                  NA
-    ##  7 Helicolenus dactylopterus            45.3           -59.4                  NA
-    ##  8 Helicolenus dactylopterus           -33.3            17.4                 239
-    ##  9 Helicolenus dactylopterus            42.5           -66.7                  NA
-    ## 10 Helicolenus dactylopterus            42.3           -66.5                  NA
-    ## # … with 36,247 more rows, and 4 more variables: maximumDepthInMeters <dbl>,
-    ## #   year <chr>, basisOfRecord <chr>, institutionCode <chr>
-
-``` r
 # do.call / rbind AND convert to data.table
 obis <- as.data.table( do.call(rbind, lspp) )
-obis
-```
 
-    ##                   scientificName decimalLatitude decimalLongitude
-    ##     1:                 Mora moro       -42.94830       -175.56000
-    ##     2:                 Mora moro       -42.86500       -176.99330
-    ##     3:                 Mora moro       -42.83830       -177.42170
-    ##     4:                 Mora moro       -37.67500        139.31667
-    ##     5:                 Mora moro       -39.80500        168.03670
-    ##    ---                                                           
-    ## 46525: Helicolenus dactylopterus        42.33783        -67.21600
-    ## 46526: Helicolenus dactylopterus        42.48067        -64.74517
-    ## 46527: Helicolenus dactylopterus        42.38083        -66.21833
-    ## 46528: Helicolenus dactylopterus        42.55750        -66.81467
-    ## 46529: Helicolenus dactylopterus        43.34533        -63.27667
-    ##        minimumDepthInMeters maximumDepthInMeters year    basisOfRecord
-    ##     1:                  877                  880 1984 HumanObservation
-    ##     2:                  793                  817 1988 HumanObservation
-    ##     3:                  800                  800 1985 HumanObservation
-    ##     4:                  915                  920 <NA> HumanObservation
-    ##     5:                  850                  861 1988 HumanObservation
-    ##    ---                                                                
-    ## 46525:                   NA                   NA <NA> HumanObservation
-    ## 46526:                   NA                   NA <NA> HumanObservation
-    ## 46527:                   NA                   NA <NA> HumanObservation
-    ## 46528:                   NA                   NA <NA> HumanObservation
-    ## 46529:                   NA                   NA <NA> HumanObservation
-    ##                                institutionCode
-    ##     1:                                    NIWA
-    ##     2:                                    NIWA
-    ##     3:                                    NIWA
-    ##     4:                        CSIRO, Australia
-    ##     5:                                    NIWA
-    ##    ---                                        
-    ## 46525: Bedford Institute of Oceanography (BIO)
-    ## 46526: Bedford Institute of Oceanography (BIO)
-    ## 46527: Bedford Institute of Oceanography (BIO)
-    ## 46528: Bedford Institute of Oceanography (BIO)
-    ## 46529: Bedford Institute of Oceanography (BIO)
+print(obis)
+##                   scientificName decimalLatitude decimalLongitude
+##     1:                 Mora moro       -42.94830       -175.56000
+##     2:                 Mora moro       -42.86500       -176.99330
+##     3:                 Mora moro       -42.83830       -177.42170
+##     4:                 Mora moro       -37.67500        139.31667
+##     5:                 Mora moro       -39.80500        168.03670
+##    ---                                                           
+## 46525: Helicolenus dactylopterus        42.33783        -67.21600
+## 46526: Helicolenus dactylopterus        42.48067        -64.74517
+## 46527: Helicolenus dactylopterus        42.38083        -66.21833
+## 46528: Helicolenus dactylopterus        42.55750        -66.81467
+## 46529: Helicolenus dactylopterus        43.34533        -63.27667
+##        minimumDepthInMeters maximumDepthInMeters year    basisOfRecord
+##     1:                  877                  880 1984 HumanObservation
+##     2:                  793                  817 1988 HumanObservation
+##     3:                  800                  800 1985 HumanObservation
+##     4:                  915                  920 <NA> HumanObservation
+##     5:                  850                  861 1988 HumanObservation
+##    ---                                                                
+## 46525:                   NA                   NA <NA> HumanObservation
+## 46526:                   NA                   NA <NA> HumanObservation
+## 46527:                   NA                   NA <NA> HumanObservation
+## 46528:                   NA                   NA <NA> HumanObservation
+## 46529:                   NA                   NA <NA> HumanObservation
+##                                institutionCode
+##     1:                                    NIWA
+##     2:                                    NIWA
+##     3:                                    NIWA
+##     4:                        CSIRO, Australia
+##     5:                                    NIWA
+##    ---                                        
+## 46525: Bedford Institute of Oceanography (BIO)
+## 46526: Bedford Institute of Oceanography (BIO)
+## 46527: Bedford Institute of Oceanography (BIO)
+## 46528: Bedford Institute of Oceanography (BIO)
+## 46529: Bedford Institute of Oceanography (BIO)
+```
 
 ``` r
 # SAVE OBIS TABLE
 date_string <- format(Sys.time(), "%Y") # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
-```
+## [1] "obisAllSpp2023.csv"
 
-    ## [1] "obisAllSpp2023.csv"
-
-``` r
 fwrite(obis, filename)
 ```
 
@@ -476,7 +491,7 @@ plot( st_geometry(sppSpatial), pch = 16, col = '#ff000040', add = TRUE)
 plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
 ```
 
-<img src="README_files/figure-gfm/spatialPlot1-1.png" width="90%" />
+<img src="README_files/figure-gfm/spatialPlot1-1.png" width="90%" style="display: block; margin: auto;" />
 
 > Colors can be set using hex codes of six digits ([hex
 > colors](https://www.color-hex.com/)). If you add two extra digits,
@@ -505,24 +520,22 @@ plot( st_geometry(sppAzores), pch = 16, col = '#ff000040', add = TRUE)
 plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
 ```
 
-<img src="README_files/figure-gfm/spatialPlot2-1.png" width="90%" />
+<img src="README_files/figure-gfm/spatialPlot2-1.png" width="90%" style="display: block; margin: auto;" />
 
 Most of the data come from our institute (IMAR/DOP) and are from 1971 to
 2013:
 
 ``` r
 table(sppAzores$institutionCode)
+## 
+##       50 IMAR/DOP      MCZ     MNHN     PENN 
+##        1      920        2       35        2
 ```
-
-    ## 
-    ##       50 IMAR/DOP      MCZ     MNHN     PENN 
-    ##        1      920        2       35        2
 
 ``` r
 range(sppAzores$year, na.rm = TRUE)
+## [1] 1971 2013
 ```
-
-    ## [1] 1971 2013
 
 ### Temporal filter
 
@@ -574,7 +587,7 @@ plot(dtm)
 title("DTM EMODNET")
 ```
 
-<img src="README_files/figure-gfm/dtm-1.png" width="90%" />
+<img src="README_files/figure-gfm/dtm-1.png" width="90%" style="display: block; margin: auto;" />
 
 We can then exclude from this raster all depths below 1000 m and use it
 to filter our species data set
@@ -587,7 +600,7 @@ plot(dtm)
 title("DTM < 1000 m")
 ```
 
-<img src="README_files/figure-gfm/dtm1500-1.png" width="90%" />
+<img src="README_files/figure-gfm/dtm1500-1.png" width="90%" style="display: block; margin: auto;" />
 
 Extract the depth and raster cells based on the coordinates associated
 with each species record:
@@ -717,7 +730,7 @@ ggplot() +
   facet_grid(. ~ scientificName)
 ```
 
-<img src="README_files/figure-gfm/spatialPlot3-1.png" width="90%" />
+<img src="README_files/figure-gfm/spatialPlot3-1.png" width="90%" style="display: block; margin: auto;" />
 
 # 4.Answer our question
 
@@ -738,7 +751,7 @@ ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) +
   scale_fill_manual(values = c("bisque2", "azure2")) #check http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 ```
 
-<img src="README_files/figure-gfm/violin-1.png" width="90%" />
+<img src="README_files/figure-gfm/violin-1.png" width="90%" style="display: block; margin: auto;" />
 
 We can run a t.test to assess if the difference between the average
 depth of the two species can be expected only by chance (i.e, they have

@@ -3,14 +3,32 @@ title: "R Class UAz-Okeanos"
 author: "Gerald H. Taranto"
 date: "2023-06-01"
 output: 
-  github_document
+  github_document:
+    toc: true
+    toc_depth: 3
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+```{css, echo=FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-y: auto !important;
+  max-height: 500px;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
 
+blockquote {
+  color: #007577;
+  margin-left: 0.5em;
+  margin-right: 1em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-left: 4px #007577 solid;
+}
+```
 
-```{r setup, include=FALSE, fig.align='center', out.width="90%", dpi=600}
-knitr::opts_chunk$set(echo = TRUE,  out.width = "100%")
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center', out.width="90%", dpi=600)
 ```
 
 # 1.Introduction
@@ -18,6 +36,14 @@ knitr::opts_chunk$set(echo = TRUE,  out.width = "100%")
 In this brief lecture on the use of the R environment for the processing of ecological data we will learn how to extract and visualize spatial data from a repository ([OBIS](https://obis.org/ "Ocean Biodiversity Information System")), clean the extracted data and apply some simple statistics. To keep things simple we will focus on two species common in the Azores: ***Helicolenus dactylopterus*** (bluemouth rockfish / boca negra) and ***Mora moro*** (Common mora / Melga). 
 
 We will try to answer a simple question: **do these species present different depth distributions in the Azores?** The focus will be on the R language itself rather than on the actual data analysis.
+
+### Git, github and Rmarkdown
+
+Before we start note that it is relatively easy to create a page like this one once you have a proper setup on your computer. 
+
+I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`). You can download the file I used to create this page (`Readme.Rmd`) and open it in Rstudio. This files is written using R markdown, a language that allows you to integrate R codes and text producing different kind of outputs (PDF, HTML, etc.). If you are interested check this [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat sheet](file:///E:/Users/VideoLab/Downloads/rmarkdown-1.pdf). 
+
+Once you have your readme file ready you can upload it on a [github repository](https://github.com/) after you set a [Git](https://git-scm.com/about) version control system on your computer. A thorough explanation of git and github setting goes beyond this class. But if you want to give it a try, this [video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very easy explanation.
 
 ### Data.table
 
@@ -91,7 +117,7 @@ For our lesson we will use some data from the [OBIS](https://obis.org/ "Ocean Bi
 
 > Note that for most of the things you plan to do there is already an R package that can solve your problems. You just have to look for it. 
 
-```{r robis, warning=FALSE, collapse=FALSE, message=FALSE}
+```{r robis, warning=FALSE, message=FALSE, collapse=TRUE}
 # install.packages("robis") # Install package if required
 library(robis)
 
@@ -105,24 +131,26 @@ for(spp in spp_of_interest){
   lspp[[spp]] <- robis::occurrence(spp) # save results into a named list
 }
 
-lspp
+print(lspp)
 ```
 
 > Note that named lists are an excellent method to save any kind of result from loops. They will become your good friends.   
 
 Now the downloaded data is in [tibble](https://tibble.tidyverse.org/) format and has a lot of columns we don't need. Let's drop the columns we don't need, convert it into a `data table` and save it as a csv file using the function [data.table::fwrite](https://rdatatable.gitlab.io/data.table/reference/fwrite.html). Note that we can join tabular data (matrices, data frames, etc.) stored into a lists using the function `do.call` with the argument `rbind` (as we do below). 
 
-```{r do call, warning=FALSE, collapse=FALSE, message=FALSE}
+```{r do_call, warning=FALSE, message=FALSE, collapse=TRUE}
 # SELECT COLUMN 
 keep_col <- c("scientificName", "decimalLatitude", "decimalLongitude", "minimumDepthInMeters", "maximumDepthInMeters", "year", "basisOfRecord", "institutionCode")
 
 lspp <- lapply(lspp, function(x) x[, keep_col]) 
-lspp
 
 # do.call / rbind AND convert to data.table
 obis <- as.data.table( do.call(rbind, lspp) )
-obis
 
+print(obis)
+```
+
+```{r saveRobis, collapse=TRUE}
 # SAVE OBIS TABLE
 date_string <- format(Sys.time(), "%Y") # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
@@ -225,10 +253,14 @@ plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
 
 Most of the data come from our institute (IMAR/DOP) and are from 1971 to 2013:
 
-```{r institute}
+```{r institute, collapse=TRUE}
 table(sppAzores$institutionCode)
+```
+
+```{r yearRng, collapse=TRUE}
 range(sppAzores$year, na.rm = TRUE)
 ```
+
 
 ### Temporal filter
 
