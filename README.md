@@ -3,6 +3,23 @@ R Class UAz-Okeanos
 Gerald H. Taranto
 2023-06-01
 
+- <a href="#1introduction" id="toc-1introduction">1.Introduction</a>
+  - <a href="#git-github-and-rmarkdown"
+    id="toc-git-github-and-rmarkdown">Git, github and Rmarkdown</a>
+  - <a href="#datatable" id="toc-datatable">Data.table</a>
+- <a href="#get-obis-data" id="toc-get-obis-data">Get obis data</a>
+- <a href="#2visualize-data" id="toc-2visualize-data">2.Visualize data</a>
+- <a href="#3clean-data" id="toc-3clean-data">3.Clean data</a>
+  - <a href="#spatial-filter" id="toc-spatial-filter">Spatial filter</a>
+  - <a href="#temporal-filter" id="toc-temporal-filter">Temporal filter</a>
+  - <a href="#depth-filter" id="toc-depth-filter">Depth filter</a>
+  - <a href="#data-rarefaction" id="toc-data-rarefaction">Data
+    rarefaction</a>
+  - <a href="#visualize-clean-data" id="toc-visualize-clean-data">Visualize
+    clean data</a>
+- <a href="#4answer-our-question" id="toc-4answer-our-question">4.Answer
+  our question</a>
+
 # 1.Introduction
 
 In this brief lecture on the use of the R environment for the processing

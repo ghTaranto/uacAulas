@@ -3,27 +3,10 @@ title: "R Class UAz-Okeanos"
 author: "Gerald H. Taranto"
 date: "2023-06-01"
 output: 
-  github_document
+  github_document:
+    toc: true
+    toc_depth: 3
 ---
-
-```{css, echo=FALSE, include=FALSE}
-<!-- pre code, pre, code { -->
-<!--   white-space: pre !important; -->
-<!--   overflow-y: auto !important; -->
-<!--   max-height: 500px; -->
-<!--   word-break: keep-all !important; -->
-<!--   word-wrap: initial !important; -->
-<!-- } -->
-
-<!-- blockquote { -->
-<!--   color: #007577; -->
-<!--   margin-left: 0.5em; -->
-<!--   margin-right: 1em; -->
-<!--   margin-top: 1.5em; -->
-<!--   margin-bottom: 1.5em; -->
-<!--   border-left: 4px #007577 solid; -->
-<!-- } -->
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align='center', out.width="90%", dpi=600)
