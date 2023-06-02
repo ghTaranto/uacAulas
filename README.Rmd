@@ -2,7 +2,8 @@
 title: "R Class UAz-Okeanos"
 author: "Gerald H. Taranto"
 date: "2023-06-01"
-output: github_document
+output: 
+  github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -123,7 +124,7 @@ obis <- as.data.table( do.call(rbind, lspp) )
 obis
 
 # SAVE OBIS TABLE
-date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
+date_string <- format(Sys.time(), "%Y") # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
 
@@ -137,7 +138,7 @@ fwrite(obis, filename)
 So let's give it a try. First we can read back our species data table using the function [data.table::fread](https://rdatatable.gitlab.io/data.table/reference/fread.html) and check that it is all right. 
 
 ```{r hidden, echo=FALSE}
-date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
+date_string <- format(Sys.time(), "%Y") # save the download date (good practice) see https://www.r-bloggers.com/2013/08/date-formats-in-r/
 filename <- paste0("obisAllSpp", date_string, ".csv")
 ```
 

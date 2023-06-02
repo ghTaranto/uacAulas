@@ -302,12 +302,12 @@ obis
 
 ``` r
 # SAVE OBIS TABLE
-date_string <- gsub("-", "_", Sys.Date()) # save the download date (good practice)
+date_string <- format(Sys.time(), "%Y") # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
 ```
 
-    ## [1] "obisAllSpp2023_06_01.csv"
+    ## [1] "obisAllSpp2023.csv"
 
 ``` r
 fwrite(obis, filename)
