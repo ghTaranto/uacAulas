@@ -30,13 +30,13 @@ that allows you to integrate R codes and text producing different kind
 of outputs (PDF, HTML, etc.). If you are interested check this
 [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for
 Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat
-sheet](file:///E:/Users/VideoLab/Downloads/rmarkdown-1.pdf).
+sheet](https://rstudio.com/resources/cheatsheets).
 
 Once you have your readme file ready you can upload it on a [github
 repository](https://github.com/) after you set a
 [Git](https://git-scm.com/about) version control system on your
-computer. A thorough explanation of git and github setting goes beyond
-this class. But if you want to give it a try, this
+computer. A thorough explanation of git and github settings goes beyond
+this class, but if you want to give it a try, this
 [video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very
 easy explanation.
 

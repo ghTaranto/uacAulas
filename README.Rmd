@@ -39,7 +39,7 @@ We will try to answer a simple question: **do these species present different de
 
 Before we start note that it is relatively easy to create a page like this one once you have a proper setup on your computer. 
 
-I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`). You can download the file I used to create this page (`Readme.Rmd`) and open it in Rstudio. This files is written using R markdown, a language that allows you to integrate R codes and text producing different kind of outputs (PDF, HTML, etc.). If you are interested check this [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat sheet](https://rstudio.com/resources/cheatsheets/). 
+I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`). You can download the file I used to create this page (`Readme.Rmd`) and open it in Rstudio. This files is written using R markdown, a language that allows you to integrate R codes and text producing different kind of outputs (PDF, HTML, etc.). If you are interested check this [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat sheet](https://rstudio.com/resources/cheatsheets). 
 
 Once you have your readme file ready you can upload it on a [github repository](https://github.com/) after you set a [Git](https://git-scm.com/about) version control system on your computer. A thorough explanation of git and github settings goes beyond this class, but if you want to give it a try, this [video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very easy explanation.
 
