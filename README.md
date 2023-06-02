@@ -522,7 +522,8 @@ range(sppAzores$year, na.rm = TRUE)
 
 Now we’ll apply a temporal filter to exclude old records that are more
 likely to present georeferencing issues. So we will remove all records
-without a year and all records registered before the year 2000
+without an associated year and all records registered before the year
+2000:
 
 ``` r
 sppAzores <- sppAzores[!is.na(sppAzores$year), ]
