@@ -12,21 +12,21 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align='center', out.width="90%", dpi=600)
 ```
 
-# 1.Introduction
+# 1. Introduction
 
 In this brief lecture on the use of the R environment for the processing of ecological data we will learn how to extract and visualize spatial data from a repository ([OBIS](https://obis.org/ "Ocean Biodiversity Information System")), clean the extracted data and apply some simple statistics. To keep things simple we will focus on two species common in the Azores: ***Helicolenus dactylopterus*** (bluemouth rockfish / boca negra) and ***Mora moro*** (Common mora / Melga). 
 
 We will try to answer a simple question: **do these species present different depth distributions in the Azores?** The focus will be on the R language itself rather than on the actual data analysis.
 
-### Git, github and Rmarkdown
+### 1.1 Git, github and Rmarkdown
 
 Before we start note that it is relatively easy to create a page like this one once you have a proper setup on your computer. 
 
-I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`). You can download the file I used to create this page (`Readme.Rmd`) and open it in Rstudio. This files is written using R markdown, a language that allows you to integrate R codes and text producing different kind of outputs (PDF, HTML, etc.). If you are interested check this [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat sheet](https://rstudio.com/resources/cheatsheets). 
+I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`). You can download the file I used to create this page ([Readme.Rmd](https://github.com/ghTaranto/uacAulas/blob/main/README.Rmd)) and open it in Rstudio. R markdown is a language that allows you to integrate R and other codes and text producing different kind of outputs (PDF, HTML, etc.). If you are interested check this [chapter](https://r4ds.had.co.nz/r-markdown.html) from the book ***R for Data Science*** by Garrett Grolemund and Hadley Wickham and the [cheat sheet](https://rstudio.com/resources/cheatsheets). 
 
 Once you have your readme file ready you can upload it on a [github repository](https://github.com/) after you set a [Git](https://git-scm.com/about) version control system on your computer. A thorough explanation of git and github settings goes beyond this class, but if you want to give it a try, this [video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very easy explanation.
 
-### Data.table
+### 1.2 Data.table
 
 Our data will be in a tabular form which is normally stored as a `data.frame` in base R. However, we will use a slightly different data structure introduced by the package `data.table` ([vignettes](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html); [cheat sheet](https://res.cloudinary.com/dyd911kmh/image/upload/v1653830846/Marketing/Blog/data_table_cheat_sheet.pdf)). Data.table is an R package that provides a high-performance version of base R’s `data.frame` with syntax and feature enhancements for ease of use, convenience and programming speed. 
 
@@ -92,7 +92,7 @@ For more information about `data.table` consult references ([vignettes](https://
 > Note that the **stack overflow community** is an excellent place where to look for help when you get stuck on some problem. Be sure to ask questions following the community's [guidelines](https://stackoverflow.com/help/how-to-ask). 
 
 
-# Get obis data
+# 2. Get obis data
 
 For our lesson we will use some data from the [OBIS](https://obis.org/ "Ocean Biodiversity Information System") repository. To download data from obis there is a package called [robis](https://iobis.github.io/robis/articles/getting-started.html). 
 
@@ -137,10 +137,10 @@ date_string <- format(Sys.time(), "%Y") # save the download date (good practice)
 filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
 
-fwrite(obis, filename)
+data.table::fwrite(obis, filename)
 ```
 
-# 2.Visualize data
+# 3. Visualize data
 
 > In my experience, the most common use of R is to visualize, organize and clean data. With time, you will see that the actual analyses will occupy little of your time. 
 
@@ -152,7 +152,7 @@ filename <- paste0("obisAllSpp", date_string, ".csv")
 ```
 
 ```{r read_data}
-spp <- fread(filename)
+spp <- data.table::fread(filename)
 spp
 ```
 
@@ -214,9 +214,9 @@ plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
 
 > Colors can be set using hex codes of six digits ([hex colors](https://www.color-hex.com/)). If you add two extra digits, these define the color opacity. In our previous figure `#ff0000` is the hex code for the color `red1` and the last two numbers `40` set the opacity at 40% (`#ff000040`). In this way we can see overlappyng points. 
 
-# 3.Clean data
+# 4. Clean data
 
-### Spatial filter
+### 4.1 Spatial filter
 
 Now we are only interested in the data from the Azores. We'll use the shapefile `AzoresEEZ.shp` to apply a spatial filter using the function [sf::st_filter](https://r-spatial.github.io/sf/reference/st_join.html):
 
@@ -242,12 +242,11 @@ table(sppAzores$institutionCode)
 range(sppAzores$year, na.rm = TRUE)
 ```
 
-
-### Temporal filter
+### 4.2 Temporal filter
 
 Now we'll apply a temporal filter to exclude old records that are more likely to present georeferencing issues. So we will remove all records without an associated year and all records registered before the year 2000:
 
-```{r spatial filter}
+```{r spatial_filter, collapse=TRUE}
 sppAzores <- sppAzores[!is.na(sppAzores$year), ]
 sppAzores <- sppAzores[sppAzores$year >= 2000, ]
 ```
@@ -259,27 +258,31 @@ table(sppAzores$scientificName)
 table(sppAzores$institutionCode) 
 ```
 
-### Depth filter
+### 4.3 Depth filter
 
-To answer our question we will need to have some depth associated with each register. We will use a digital terrain model (dtm; raster data) to associate a depth to each register. This DTM was obtained from [EMODNET](https://emodnet.ec.europa.eu/geoviewer/). We will assume that our surveys only go down to a depth of 1500 m, so we will exclude all data points below 1500 m deph. 
+To answer our question we will need to have some depth associated with each register. Unfortunately most of the data deposited in OBIS for the Azores region do not have an associated depth. 
 
-The first step will be to read and plot the dtm using the `terra` package. 
+```{r associated_depths, collapse=TRUE}
+sppAzores[, c("minimumDepthInMeters", "maximumDepthInMeters")] 
+```
+
+Therefore, we will use a digital terrain model (dtm; raster data) to associate a depth to each record. This DTM was obtained from [EMODNET](https://emodnet.ec.europa.eu/geoviewer/). The first step will be to read and plot the dtm using the `terra` package. 
 
 ```{r dtm, out.width="90%", message=FALSE, warning=FALSE, dpi=600}
 library(terra)
 dtm <- terra::rast("rasterFiles/emodnetDTM.tif")
+
 plot(dtm)
 title("DTM EMODNET")
 ```
 
-We can then exclude from this raster all depths below 1000 m and use it to filter our species data set 
+We will assume that our scientific surveys only go down to a depth of 1000 m, so we will exclude all data points below this depth because we are unsure about how they were obtained. One of the ways of doing so is to exclude from this raster all depths below 1000 m and use it to filter our species records. 
 
-```{r dtm1500, out.width="90%", message=FALSE, dpi=600}
-library(terra)
-dtm <- dtm
+```{r dtm1000, out.width="90%", message=FALSE, dpi=600}
 dtm[which(values(dtm < -1000))] <- NA
+
 plot(dtm)
-title("DTM < 1000 m")
+title("DTM > 1000 m")
 ```
 
 Extract the depth and raster cells based on the coordinates associated with each species record: 
@@ -290,7 +293,7 @@ sppAzores$depth <- ext_depth[,1]
 sppAzores$rcell <- ext_depth[,2]
 ```
 
-Remove records with NA values instead of depth values (e.g. records below 1000 m):
+Remove records with NA values instead of depth values (i.e. records below 1000 m):
 ```{r dept_filter, collapse=TRUE}
 nrow(sppAzores)
 sppAzores <- sppAzores[!is.na(sppAzores$depth), ]
@@ -298,7 +301,15 @@ sppAzores <- sppAzores[!is.na(sppAzores$depth), ]
 nrow(sppAzores)
 ```
 
-### Data rarefaction 
+Let's check how many records we have now:
+
+
+```{r sppRecDepth, collapse=TRUE}
+table(sppAzores$scientificName)
+```
+
+
+### 4.4 Data rarefaction 
 
 Most of statistical tests require independence of observations. Since some of our species records could be recorded within the same survey (e.g. same bottom longline deployment) we will aggregate data falling within the same raster cell of the dtm raster. These cells have an approximate resolution of 1X1 kilometer. 
 
@@ -320,11 +331,11 @@ nrow(sppAzoresDT)
 table(sppAzoresDT$scientificName)
 ```
 
-### Visualize clean data 
+### 4.5 Visualize clean data 
 
 Let's plot our final data. We will try to make a nicer figure using `ggplot2`. We can use a custom font for our plot with the library [showtext](https://cran.rstudio.com/web/packages/showtext/vignettes/introduction.html).
 
-> Note that plots with user defined fonts and color look much more professional. 
+> Note that plots with user defined fonts and colors look much more professional. 
 
 ```{r showtext, message=FALSE}
 # Load library (install them if not available on your computer)
@@ -363,7 +374,7 @@ ggplot() +
   facet_grid(. ~ scientificName)
 ```
 
-# 4.Answer our question 
+# 5. Answer our question 
 
 So after cleaning our data we can answer our question: __do *Helicolenus dactylopterus* and *Mora moro* present different depth distributions in the Azores?__
 
@@ -380,14 +391,14 @@ ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) +
   scale_fill_manual(values = c("bisque2", "azure2")) #check http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 ```
 
-We can run a t.test to assess if the difference between the average depth of the two species can be expected only by chance (i.e, they have the same average depth)
+We can run a t.test to assess if the difference between the average depth of the two species can be expected only by chance (i.e they have the same average depth):
 
 ```{r ttest}
 t.test(sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth], 
        sppAzoresDT[scientificName == "Mora moro", depth])
 ```
 
-> **Do our species have different depth distributions?**
-
 You can check [this](https://www.statology.org/interpret-t-test-results-in-r/) website to interpret the results. 
+
+> **Do our species have different depth distributions?**
 

@@ -3,24 +3,27 @@ R Class UAz-Okeanos
 Gerald H. Taranto
 2023-06-01
 
-- <a href="#1introduction" id="toc-1introduction">1.Introduction</a>
-  - <a href="#git-github-and-rmarkdown"
-    id="toc-git-github-and-rmarkdown">Git, github and Rmarkdown</a>
-  - <a href="#datatable" id="toc-datatable">Data.table</a>
-- <a href="#get-obis-data" id="toc-get-obis-data">Get obis data</a>
-- <a href="#2visualize-data" id="toc-2visualize-data">2.Visualize data</a>
-- <a href="#3clean-data" id="toc-3clean-data">3.Clean data</a>
-  - <a href="#spatial-filter" id="toc-spatial-filter">Spatial filter</a>
-  - <a href="#temporal-filter" id="toc-temporal-filter">Temporal filter</a>
-  - <a href="#depth-filter" id="toc-depth-filter">Depth filter</a>
-  - <a href="#data-rarefaction" id="toc-data-rarefaction">Data
+- <a href="#1-introduction" id="toc-1-introduction">1. Introduction</a>
+  - <a href="#11-git-github-and-rmarkdown"
+    id="toc-11-git-github-and-rmarkdown">1.1 Git, github and Rmarkdown</a>
+  - <a href="#12-datatable" id="toc-12-datatable">1.2 Data.table</a>
+- <a href="#2-get-obis-data" id="toc-2-get-obis-data">2. Get obis data</a>
+- <a href="#3-visualize-data" id="toc-3-visualize-data">3. Visualize
+  data</a>
+- <a href="#4-clean-data" id="toc-4-clean-data">4. Clean data</a>
+  - <a href="#41-spatial-filter" id="toc-41-spatial-filter">4.1 Spatial
+    filter</a>
+  - <a href="#42-temporal-filter" id="toc-42-temporal-filter">4.2 Temporal
+    filter</a>
+  - <a href="#43-depth-filter" id="toc-43-depth-filter">4.3 Depth filter</a>
+  - <a href="#44-data-rarefaction" id="toc-44-data-rarefaction">4.4 Data
     rarefaction</a>
-  - <a href="#visualize-clean-data" id="toc-visualize-clean-data">Visualize
-    clean data</a>
-- <a href="#4answer-our-question" id="toc-4answer-our-question">4.Answer
-  our question</a>
+  - <a href="#45-visualize-clean-data" id="toc-45-visualize-clean-data">4.5
+    Visualize clean data</a>
+- <a href="#5-answer-our-question" id="toc-5-answer-our-question">5.
+  Answer our question</a>
 
-# 1.Introduction
+# 1. Introduction
 
 In this brief lecture on the use of the R environment for the processing
 of ecological data we will learn how to extract and visualize spatial
@@ -35,18 +38,19 @@ We will try to answer a simple question: **do these species present
 different depth distributions in the Azores?** The focus will be on the
 R language itself rather than on the actual data analysis.
 
-### Git, github and Rmarkdown
+### 1.1 Git, github and Rmarkdown
 
 Before we start note that it is relatively easy to create a page like
 this one once you have a proper setup on your computer.
 
 I wrote this page in `RStudio` as an `Rmarkdown` file (extension `Rmd`).
-You can download the file I used to create this page (`Readme.Rmd`) and
-open it in Rstudio. This files is written using R markdown, a language
-that allows you to integrate R codes and text producing different kind
-of outputs (PDF, HTML, etc.). If you are interested check this
-[chapter](https://r4ds.had.co.nz/r-markdown.html) from the book *R for
-Data Science* by Garrett Grolemund and Hadley Wickham and the [cheat
+You can download the file I used to create this page
+([Readme.Rmd](https://github.com/ghTaranto/uacAulas/blob/main/README.Rmd))
+and open it in Rstudio. R markdown is a language that allows you to
+integrate R and other codes and text producing different kind of outputs
+(PDF, HTML, etc.). If you are interested check this
+[chapter](https://r4ds.had.co.nz/r-markdown.html) from the book ***R for
+Data Science*** by Garrett Grolemund and Hadley Wickham and the [cheat
 sheet](https://rstudio.com/resources/cheatsheets).
 
 Once you have your readme file ready you can upload it on a [github
@@ -57,7 +61,7 @@ this class, but if you want to give it a try, this
 [video](https://www.youtube.com/watch?v=p8bZBvcFPuk) provides a very
 easy explanation.
 
-### Data.table
+### 1.2 Data.table
 
 Our data will be in a tabular form which is normally stored as a
 `data.frame` in base R. However, we will use a slightly different data
@@ -169,7 +173,7 @@ overflow](https://stackoverflow.com/questions/tagged/data.table).
 > questions following the community’s
 > [guidelines](https://stackoverflow.com/help/how-to-ask).
 
-# Get obis data
+# 2. Get obis data
 
 For our lesson we will use some data from the
 [OBIS](https://obis.org/ "Ocean Biodiversity Information System")
@@ -306,10 +310,10 @@ filename <- paste0("obisAllSpp", date_string, ".csv")
 filename
 ## [1] "obisAllSpp2023.csv"
 
-fwrite(obis, filename)
+data.table::fwrite(obis, filename)
 ```
 
-# 2.Visualize data
+# 3. Visualize data
 
 > In my experience, the most common use of R is to visualize, organize
 > and clean data. With time, you will see that the actual analyses will
@@ -321,7 +325,7 @@ using the function
 and check that it is all right.
 
 ``` r
-spp <- fread(filename)
+spp <- data.table::fread(filename)
 spp
 ```
 
@@ -481,9 +485,9 @@ plot( st_geometry(azoresEEZ), border = "cyan4", lwd=3, add = TRUE)
 > the opacity at 40% (`#ff000040`). In this way we can see overlappyng
 > points.
 
-# 3.Clean data
+# 4. Clean data
 
-### Spatial filter
+### 4.1 Spatial filter
 
 Now we are only interested in the data from the Azores. We’ll use the
 shapefile `AzoresEEZ.shp` to apply a spatial filter using the function
@@ -518,7 +522,7 @@ range(sppAzores$year, na.rm = TRUE)
 ## [1] 1971 2013
 ```
 
-### Temporal filter
+### 4.2 Temporal filter
 
 Now we’ll apply a temporal filter to exclude old records that are more
 likely to present georeferencing issues. So we will remove all records
@@ -550,39 +554,62 @@ table(sppAzores$institutionCode)
     ##       50 IMAR/DOP 
     ##        1      783
 
-### Depth filter
+### 4.3 Depth filter
 
 To answer our question we will need to have some depth associated with
-each register. We will use a digital terrain model (dtm; raster data) to
-associate a depth to each register. This DTM was obtained from
-[EMODNET](https://emodnet.ec.europa.eu/geoviewer/). We will assume that
-our surveys only go down to a depth of 1500 m, so we will exclude all
-data points below 1500 m deph.
+each register. Unfortunately most of the data deposited in OBIS for the
+Azores region do not have an associated depth.
 
-The first step will be to read and plot the dtm using the `terra`
-package.
+``` r
+sppAzores[, c("minimumDepthInMeters", "maximumDepthInMeters")] 
+## Simple feature collection with 784 features and 2 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -31.31381 ymin: 36.89858 xmax: -24.70116 ymax: 42.432
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##    minimumDepthInMeters maximumDepthInMeters                   geometry
+## 1                    NA                   NA POINT (-31.16304 39.72175)
+## 2                    NA                   NA POINT (-27.34304 38.66143)
+## 3                    NA                   NA POINT (-28.98802 38.23337)
+## 4                    NA                   NA POINT (-27.32773 38.65074)
+## 5                    NA                   NA POINT (-25.20436 36.94218)
+## 6                    NA                   NA POINT (-25.65511 37.20066)
+## 7                    NA                   NA POINT (-25.91471 37.59723)
+## 8                    NA                   NA POINT (-27.34705 38.82407)
+## 9                    NA                   NA POINT (-25.46004 37.87146)
+## 10                   NA                   NA POINT (-27.19899 38.84519)
+```
+
+Therefore, we will use a digital terrain model (dtm; raster data) to
+associate a depth to each record. This DTM was obtained from
+[EMODNET](https://emodnet.ec.europa.eu/geoviewer/). The first step will
+be to read and plot the dtm using the `terra` package.
 
 ``` r
 library(terra)
 dtm <- terra::rast("rasterFiles/emodnetDTM.tif")
+
 plot(dtm)
 title("DTM EMODNET")
 ```
 
 <img src="README_files/figure-gfm/dtm-1.png" width="90%" style="display: block; margin: auto;" />
 
-We can then exclude from this raster all depths below 1000 m and use it
-to filter our species data set
+We will assume that our scientific surveys only go down to a depth of
+1000 m, so we will exclude all data points below this depth because we
+are unsure about how they were obtained. One of the ways of doing so is
+to exclude from this raster all depths below 1000 m and use it to filter
+our species records.
 
 ``` r
-library(terra)
-dtm <- dtm
 dtm[which(values(dtm < -1000))] <- NA
+
 plot(dtm)
-title("DTM < 1000 m")
+title("DTM > 1000 m")
 ```
 
-<img src="README_files/figure-gfm/dtm1500-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/dtm1000-1.png" width="90%" style="display: block; margin: auto;" />
 
 Extract the depth and raster cells based on the coordinates associated
 with each species record:
@@ -594,7 +621,7 @@ sppAzores$depth <- ext_depth[,1]
 sppAzores$rcell <- ext_depth[,2]
 ```
 
-Remove records with NA values instead of depth values (e.g. records
+Remove records with NA values instead of depth values (i.e. records
 below 1000 m):
 
 ``` r
@@ -606,7 +633,16 @@ nrow(sppAzores)
 ## [1] 762
 ```
 
-### Data rarefaction
+Let’s check how many records we have now:
+
+``` r
+table(sppAzores$scientificName)
+## 
+## Helicolenus dactylopterus                 Mora moro 
+##                       469                       293
+```
+
+### 4.4 Data rarefaction
 
 Most of statistical tests require independence of observations. Since
 some of our species records could be recorded within the same survey
@@ -643,13 +679,13 @@ table(sppAzoresDT$scientificName)
 ##                       328                       233
 ```
 
-### Visualize clean data
+### 4.5 Visualize clean data
 
 Let’s plot our final data. We will try to make a nicer figure using
 `ggplot2`. We can use a custom font for our plot with the library
 [showtext](https://cran.rstudio.com/web/packages/showtext/vignettes/introduction.html).
 
-> Note that plots with user defined fonts and color look much more
+> Note that plots with user defined fonts and colors look much more
 > professional.
 
 ``` r
@@ -714,7 +750,7 @@ ggplot() +
 
 <img src="README_files/figure-gfm/spatialPlot3-1.png" width="90%" style="display: block; margin: auto;" />
 
-# 4.Answer our question
+# 5. Answer our question
 
 So after cleaning our data we can answer our question: **do *Helicolenus
 dactylopterus* and *Mora moro* present different depth distributions in
@@ -736,8 +772,8 @@ ggplot(sppAzoresDT, aes(x = scientificName, y=depth, fill = scientificName)) +
 <img src="README_files/figure-gfm/violin-1.png" width="90%" style="display: block; margin: auto;" />
 
 We can run a t.test to assess if the difference between the average
-depth of the two species can be expected only by chance (i.e, they have
-the same average depth)
+depth of the two species can be expected only by chance (i.e they have
+the same average depth):
 
 ``` r
 t.test(sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth], 
@@ -756,8 +792,8 @@ t.test(sppAzoresDT[scientificName == "Helicolenus dactylopterus", depth],
     ## mean of x mean of y 
     ## -443.0585 -498.9069
 
-> **Do our species have different depth distributions?**
-
 You can check
 [this](https://www.statology.org/interpret-t-test-results-in-r/) website
 to interpret the results.
+
+> **Do our species have different depth distributions?**
