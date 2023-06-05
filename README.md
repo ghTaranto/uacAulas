@@ -221,7 +221,7 @@ print(lspp)
 ## #   month <chr>, occurrenceID <chr>, occurrenceRemarks <chr>, …
 ## 
 ## $`Helicolenus dactylopterus`
-## # A tibble: 36,257 × 154
+## # A tibble: 36,392 × 154
 ##    basisOfRecord    bibliographicCitation     catalogNumber class collectionCode
 ##    <chr>            <chr>                     <chr>         <chr> <chr>         
 ##  1 Occurrence       Scottish West Coast Surv… 1879036       Tele… DATRAS-ALT-IB…
@@ -234,7 +234,7 @@ print(lspp)
 ##  8 HumanObservation <NA>                      MCM-DEM-1924… Tele… DEM           
 ##  9 HumanObservation <NA>                      <NA>          Acti… <NA>          
 ## 10 HumanObservation <NA>                      <NA>          Acti… <NA>          
-## # … with 36,247 more rows, and 149 more variables:
+## # … with 36,382 more rows, and 149 more variables:
 ## #   coordinateUncertaintyInMeters <chr>, country <chr>, datasetID <chr>,
 ## #   day <chr>, decimalLatitude <dbl>, decimalLongitude <dbl>,
 ## #   dynamicProperties <chr>, eventDate <chr>, eventTime <chr>, family <chr>,
@@ -272,11 +272,11 @@ print(obis)
 ##     4:                 Mora moro       -37.67500        139.31667
 ##     5:                 Mora moro       -39.80500        168.03670
 ##    ---                                                           
-## 46525: Helicolenus dactylopterus        42.33783        -67.21600
-## 46526: Helicolenus dactylopterus        42.48067        -64.74517
-## 46527: Helicolenus dactylopterus        42.38083        -66.21833
-## 46528: Helicolenus dactylopterus        42.55750        -66.81467
-## 46529: Helicolenus dactylopterus        43.34533        -63.27667
+## 46660: Helicolenus dactylopterus        42.33783        -67.21600
+## 46661: Helicolenus dactylopterus        42.48067        -64.74517
+## 46662: Helicolenus dactylopterus        42.38083        -66.21833
+## 46663: Helicolenus dactylopterus        42.55750        -66.81467
+## 46664: Helicolenus dactylopterus        43.34533        -63.27667
 ##        minimumDepthInMeters maximumDepthInMeters year    basisOfRecord
 ##     1:                  877                  880 1984 HumanObservation
 ##     2:                  793                  817 1988 HumanObservation
@@ -284,11 +284,11 @@ print(obis)
 ##     4:                  915                  920 <NA> HumanObservation
 ##     5:                  850                  861 1988 HumanObservation
 ##    ---                                                                
-## 46525:                   NA                   NA <NA> HumanObservation
-## 46526:                   NA                   NA <NA> HumanObservation
-## 46527:                   NA                   NA <NA> HumanObservation
-## 46528:                   NA                   NA <NA> HumanObservation
-## 46529:                   NA                   NA <NA> HumanObservation
+## 46660:                   NA                   NA <NA> HumanObservation
+## 46661:                   NA                   NA <NA> HumanObservation
+## 46662:                   NA                   NA <NA> HumanObservation
+## 46663:                   NA                   NA <NA> HumanObservation
+## 46664:                   NA                   NA <NA> HumanObservation
 ##                                institutionCode
 ##     1:                                    NIWA
 ##     2:                                    NIWA
@@ -296,11 +296,11 @@ print(obis)
 ##     4:                        CSIRO, Australia
 ##     5:                                    NIWA
 ##    ---                                        
-## 46525: Bedford Institute of Oceanography (BIO)
-## 46526: Bedford Institute of Oceanography (BIO)
-## 46527: Bedford Institute of Oceanography (BIO)
-## 46528: Bedford Institute of Oceanography (BIO)
-## 46529: Bedford Institute of Oceanography (BIO)
+## 46660: Bedford Institute of Oceanography (BIO)
+## 46661: Bedford Institute of Oceanography (BIO)
+## 46662: Bedford Institute of Oceanography (BIO)
+## 46663: Bedford Institute of Oceanography (BIO)
+## 46664: Bedford Institute of Oceanography (BIO)
 ```
 
 ``` r
@@ -336,11 +336,11 @@ spp
     ##     4:                 Mora moro       -37.67500        139.31667
     ##     5:                 Mora moro       -39.80500        168.03670
     ##    ---                                                           
-    ## 46525: Helicolenus dactylopterus        42.33783        -67.21600
-    ## 46526: Helicolenus dactylopterus        42.48067        -64.74517
-    ## 46527: Helicolenus dactylopterus        42.38083        -66.21833
-    ## 46528: Helicolenus dactylopterus        42.55750        -66.81467
-    ## 46529: Helicolenus dactylopterus        43.34533        -63.27667
+    ## 46660: Helicolenus dactylopterus        42.33783        -67.21600
+    ## 46661: Helicolenus dactylopterus        42.48067        -64.74517
+    ## 46662: Helicolenus dactylopterus        42.38083        -66.21833
+    ## 46663: Helicolenus dactylopterus        42.55750        -66.81467
+    ## 46664: Helicolenus dactylopterus        43.34533        -63.27667
     ##        minimumDepthInMeters maximumDepthInMeters year    basisOfRecord
     ##     1:                  877                  880 1984 HumanObservation
     ##     2:                  793                  817 1988 HumanObservation
@@ -348,11 +348,11 @@ spp
     ##     4:                  915                  920   NA HumanObservation
     ##     5:                  850                  861 1988 HumanObservation
     ##    ---                                                                
-    ## 46525:                   NA                   NA   NA HumanObservation
-    ## 46526:                   NA                   NA   NA HumanObservation
-    ## 46527:                   NA                   NA   NA HumanObservation
-    ## 46528:                   NA                   NA   NA HumanObservation
-    ## 46529:                   NA                   NA   NA HumanObservation
+    ## 46660:                   NA                   NA   NA HumanObservation
+    ## 46661:                   NA                   NA   NA HumanObservation
+    ## 46662:                   NA                   NA   NA HumanObservation
+    ## 46663:                   NA                   NA   NA HumanObservation
+    ## 46664:                   NA                   NA   NA HumanObservation
     ##                                institutionCode
     ##     1:                                    NIWA
     ##     2:                                    NIWA
@@ -360,11 +360,11 @@ spp
     ##     4:                        CSIRO, Australia
     ##     5:                                    NIWA
     ##    ---                                        
-    ## 46525: Bedford Institute of Oceanography (BIO)
-    ## 46526: Bedford Institute of Oceanography (BIO)
-    ## 46527: Bedford Institute of Oceanography (BIO)
-    ## 46528: Bedford Institute of Oceanography (BIO)
-    ## 46529: Bedford Institute of Oceanography (BIO)
+    ## 46660: Bedford Institute of Oceanography (BIO)
+    ## 46661: Bedford Institute of Oceanography (BIO)
+    ## 46662: Bedford Institute of Oceanography (BIO)
+    ## 46663: Bedford Institute of Oceanography (BIO)
+    ## 46664: Bedford Institute of Oceanography (BIO)
 
 Now we are interested only in species records from the Azores. So let’s
 load some shapefiles of the Azores that will help us *filter* our
@@ -396,7 +396,7 @@ function
 # Transform our data.table into a spatial data table
 sppSpatial  <- sf::st_as_sf(spp, coords = c("decimalLongitude","decimalLatitude"))
 sppSpatial
-## Simple feature collection with 46529 features and 6 fields
+## Simple feature collection with 46664 features and 6 fields
 ## Geometry type: POINT
 ## Dimension:     XY
 ## Bounding box:  xmin: -179.9983 ymin: -53.7783 xmax: 179.9983 ymax: 61.8833
@@ -603,7 +603,7 @@ to exclude from this raster all depths below 1000 m and use it to filter
 our species records.
 
 ``` r
-dtm[which(values(dtm < -1000))] <- NA
+dtm[which(terra::values(dtm, mat = FALSE) < -1000)] <- NA
 
 plot(dtm)
 title("DTM > 1000 m")

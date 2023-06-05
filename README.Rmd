@@ -279,7 +279,7 @@ title("DTM EMODNET")
 We will assume that our scientific surveys only go down to a depth of 1000 m, so we will exclude all data points below this depth because we are unsure about how they were obtained. One of the ways of doing so is to exclude from this raster all depths below 1000 m and use it to filter our species records. 
 
 ```{r dtm1000, out.width="90%", message=FALSE, dpi=600}
-dtm[which(values(dtm < -1000))] <- NA
+dtm[which(terra::values(dtm, mat = FALSE) < -1000)] <- NA
 
 plot(dtm)
 title("DTM > 1000 m")
